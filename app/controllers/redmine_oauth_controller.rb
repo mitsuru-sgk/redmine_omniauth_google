@@ -40,6 +40,17 @@ class RedmineOauthController < AccountController
    params[:back_url] = session[:back_url]
    session.delete(:back_url)
    user = User.joins(:email_addresses).where(:email_addresses => { :address => info["email"] }).first_or_create
+    # substitute domain auth
+    if user.new_record? && settings['substitute_email_domains_auth']
+     settings['substitute_email_domains'].each_line {|domain|
+     user = User.joins(:email_addresses).where(:email_addresses => { :address => parse_email(info["email"])[:login] + '@' + domain.chomp }).first_or_create
+     if !user.new_record?
+      logger.debug "login by substitute domain @" + domain.chomp
+      break
+     end
+    }
+    end
+
     if user.new_record?
       # Self-registration off
       redirect_to(home_url) && return unless Setting.self_registration?

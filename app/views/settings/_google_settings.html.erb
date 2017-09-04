@@ -14,3 +14,11 @@
   <label>Oauth authentification:</label>
   <%= check_box_tag "settings[oauth_authentification]", true, @settings['oauth_authentification'] %>
 </p>
+<p>
+  <label>Authenticate substitute domains:</label>
+  <%= check_box_tag "settings[substitute_email_domains_auth]", true, @settings['substitute_email_domains_auth'] %>
+</p>
+<p>
+  <label>Substitute domains</label>
+  <%= text_area_tag "settings[substitute_email_domains]", @settings['substitute_email_domains'], :rows => 5 %>
+</p>
